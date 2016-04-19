@@ -21,38 +21,81 @@
 // 	THE SOFTWARE.
 
 #pragma once
-#include <MTConfig.h>
-#include <MTAppInterop.h>
 
 
-#if defined(MT_DEBUG) || defined(MT_INSTRUMENTED_BUILD)
+// Target Platform
+////////////////////////////////////////////////////////////////////////
+#if   _WIN32
 
-#define MT_REPORT_ASSERT_IMPL( condition, description, file, line ) MT::Diagnostic::ReportAssert(#condition, description, file, line);
+#define MT_PLATFORM_WINDOWS (1)
 
-#ifndef MT_REPORT_ASSERT
-#define MT_REPORT_ASSERT( description ) { MT_REPORT_ASSERT_IMPL( "always", description, __FILE__, __LINE__ ) }
-#endif
+#elif __APPLE_CC__
 
-#ifndef MT_ASSERT
-#define MT_ASSERT( condition, description ) { if ( !(condition) ) { MT_REPORT_ASSERT_IMPL( #condition, description, __FILE__, __LINE__ ) } }
-#endif
-
-#ifndef MT_VERIFY
-#define MT_VERIFY( condition, description, operation ) { if ( !(condition) ) { { MT_REPORT_ASSERT_IMPL( #condition, description, __FILE__, __LINE__ ) }; operation; } }
-#endif
+#define MT_PLATFORM_OSX (1)
 
 #else
 
-#ifndef MT_REPORT_ASSERT
-#define MT_REPORT_ASSERT( description )
+#define MT_PLATFORM_POSIX (1)
+
 #endif
 
-#ifndef MT_ASSERT
-#define MT_ASSERT( condition, description )
+
+// Compiler support for SSE intrinsics
+////////////////////////////////////////////////////////////////////////
+#if (defined(__SSE__) || defined(_M_IX86) || defined(_M_X64))
+
+#define MT_SSE_INTRINSICS_SUPPORTED (1)
+
 #endif
 
-#ifndef MT_VERIFY
-#define MT_VERIFY( condition, description, operation ) { if ( !(condition) ) { operation; } }
+
+// Compiler support for C++11
+////////////////////////////////////////////////////////////////////////
+
+#if __STDC_VERSION__ >= 201112L
+
+#define MT_CPP11_SUPPORTED (1)
+
 #endif
+
+
+// Compiler family
+////////////////////////////////////////////////////////////////////////
+
+#ifdef __clang__
+
+#define MT_CLANG_COMPILER_FAMILY (1)
+#define MT_GCC_COMPILER_FAMILY (1)
+
+#elif __GNUC__
+
+#define MT_GCC_COMPILER_FAMILY (1)
+
+#elif defined(_MSC_VER)
+
+#define MT_MSVC_COMPILER_FAMILY (1)
+
+#endif
+
+
+// Debug / Release
+////////////////////////////////////////////////////////////////////////
+
+#ifdef _DEBUG
+
+#define MT_DEBUG (1)
+
+#else
+
+#define MT_RELEASE (1)
+
+#endif
+
+
+// x64 / x86
+////////////////////////////////////////////////////////////////////////
+#if defined(_M_X64)
+
+#define MT_PTR64 (1)
 
 #endif

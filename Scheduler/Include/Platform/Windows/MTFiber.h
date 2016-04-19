@@ -25,12 +25,9 @@
 #ifndef __MT_FIBER__
 #define __MT_FIBER__
 
+#include <MTConfig.h>
 
-#if _XBOX_ONE
-	#include "MTFiberDefault.h"
-#else
 	#include "MTFiberOptimized.h"
-#endif
 
 
 #endif

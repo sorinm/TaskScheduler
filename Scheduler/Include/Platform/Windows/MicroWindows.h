@@ -21,6 +21,7 @@
 // 	THE SOFTWARE.
 #pragma once
 
+#include <MTConfig.h>
 #include <MTTypes.h>
 
 //
@@ -120,7 +121,7 @@ struct MW_SYSTEM_INFO
 	uint8 _unused_03[12];
 };
 
-#if defined(_M_X64)
+#if MT_PTR64
 
 //
 // x64 critical section, only used members are declared
@@ -145,6 +146,8 @@ struct __declspec(align(16)) MW_CONTEXT
 	MW_DWORD64 Rip;
 	uint8 _unused_04[976];
 };
+
+static_assert(__alignof(MW_CONTEXT) == 16, "MW_CONTEXT align requirements must be 16 bytes");
 
 #define MW_STACK_BASE_OFFSET (8)
 #define MW_STACK_STACK_LIMIT_OFFSET (16)
@@ -252,5 +255,3 @@ MW_WINBASEAPI void MW_WINAPI SwitchToFiber( void* lpFiber );
 }
 
 #endif
-
-
